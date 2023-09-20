@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+# allow_rule is bool
 def configure_firewall(source_ip, destination_ip, port, allow_rule):
     try:
         if allow_rule:
