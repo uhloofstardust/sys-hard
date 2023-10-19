@@ -2,21 +2,26 @@ import tkinter as tk
 from tkinter import messagebox, IntVar
 import subprocess
 
-def manage_permissions(username, path, read_access, write_access, execute_access):
-    try:
-        setfacl_command = ["sudo", "setfacl", "-m", f"user:{username}:---"]
-        if read_access:
-            setfacl_command.extend(["-m", f"user:{username}:r--"])
-        if write_access:
-            setfacl_command.extend(["-m", f"user:{username}:-w-"])
-        if execute_access:
-            setfacl_command.extend(["-m", f"user:{username}:--x"])
-        setfacl_command.append(path)
+def add_permissions(username, path, read_access, write_access, execute_access):
+    subprocess.run(["pkexec", "setfacl", '-x', f"u:{username}", path])
+    permission_string = ""
+    if read_access:
+        permission_string += "r"
+    if write_access:
+        permission_string += "w"
+    if execute_access:
+        permission_string += "x"
 
-        subprocess.run(setfacl_command, check=True)
-        messagebox.showinfo("Success", f"Permissions for '{path}' updated for user '{username}'!")
+    try:
+        subprocess.run(["pkexec", "setfacl", '-m', f"u:{username}:{permission_string}", path])
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Error", f"Failed to update permissions: {e}")
+
+def flush_user(username, path):
+    subprocess.run(["pkexec", "setfacl", '-x', f"u:{username}", path])
+    
+def flush_all(path):
+    subprocess.run(["pkexec", "setfacl", '--remove-all', path])
 
 def create_manage_permissions_page():
     subprocess.run(["pwd"])
@@ -39,7 +44,7 @@ def create_manage_permissions_page():
     tk.Checkbutton(manage_permissions_window, text="Write Access", variable=write_var).pack()
     tk.Checkbutton(manage_permissions_window, text="Execute Access", variable=execute_var).pack()
 
-    submit_button = tk.Button(manage_permissions_window, text="Submit", command=lambda: manage_permissions(entry_username.get(), entry_path.get(), read_var.get(), write_var.get(), execute_var.get()))
+    submit_button = tk.Button(manage_permissions_window, text="Submit", command=lambda: add_permissions(entry_username.get(), entry_path.get(), read_var.get(), write_var.get(), execute_var.get()))
     submit_button.pack()
 
 root = tk.Tk()
