@@ -6,4 +6,5 @@ logger = logging.getLogger()
 handler = handlers.SysLogHandler(address=("192.168.203.33", 514))
 logger.addHandler(handler)
 
-logger.info("hello there")
+while True:
+    logger.info("hello there")
