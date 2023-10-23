@@ -91,3 +91,41 @@ for rule in parsed_rules:
 ```
 
 
+```
+import re
+
+pattern = re.compile(
+    r'^(?P<allow_block>allow|deny)\s+'
+    r'id\s+(?P<id>[0-9a-fA-F:]+)\s+'
+    r'serial\s*"(?P<serial>[^"]*)"?\s+'
+    r'name\s*"(?P<name>[^"]*)"?\s+'
+    r'hash\s*"(?P<hash>[^"]*)"?\s+'
+    r'parent-hash\s*"(?P<parent_hash>[^"]*)"?\s+'
+    r'via-port\s*"(?P<via_port>[^"]*)"?\s+'
+    r'with-interface\s*"(?P<interface>[0-9a-fA-F:]+)"?\s+'
+    r'with-connect-type\s*"(?P<connect_type>[^"]*)"?$'
+)
+
+rules_conf_file = '/etc/usbguard/rules.conf'
+
+parsed_rules = []
+
+try:
+    with open(rules_conf_file, 'r') as file:
+        for line in file:
+            match = pattern.match(line)
+            if match:
+                rule_dict = match.groupdict()
+                parsed_rules.append(rule_dict)
+
+except FileNotFoundError:
+    print(f"File not found: {rules_conf_file}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+for rule in parsed_rules:
+    print(rule)
+
+```
+
+
