@@ -4,7 +4,7 @@ import subprocess
 
 def send_log():
     ip = ip_entry.get()
-    subprocess.run(f"logging -n {ip} -P 541 -f /var/logs/syslog --tcp", shell=True)
+    subprocess.run(f"logger -n {ip} -P 541 -f /var/logs/syslog --tcp", shell=True)
 
 window = tk.Tk()
 window.title("Log Sender")
