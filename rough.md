@@ -91,9 +91,3 @@ for rule in parsed_rules:
 ```
 
 
-
-
-
-
-
-[file:///home/prl/Downloads/5000-Sales-Records.zip](https://excelbianalytics.com/wp/wp-content/uploads/2017/07/500000-Sales-Records.z)https://excelbianalytics.com/wp/wp-content/uploads/2017/07/500000-Sales-Records.z
