@@ -129,3 +129,42 @@ for rule in parsed_rules:
 ```
 
 
+```
+rules_conf_file = '/etc/usbguard/rules.conf'
+
+parsed_rules = []
+
+try:
+    with open(rules_conf_file, 'r') as file:
+        rule_dict = {}
+        for line in file.readlines():
+            line = line.strip()
+            # Skip empty lines and comment lines
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split()
+            if len(parts) == 2:
+                key, value = parts
+                rule_dict[key] = value
+            elif len(parts) == 3:
+                key, value, quoted_value = parts
+                # Remove quotes from the quoted values
+                rule_dict[key] = quoted_value.strip('""')
+            else:
+                parsed_rules.append(rule_dict)
+                rule_dict = {}
+
+    if rule_dict:
+        parsed_rules.append(rule_dict)
+
+    for rule in parsed_rules:
+        print(rule)
+
+except FileNotFoundError:
+    print(f"File not found: {rules_conf_file}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+```
+
+
