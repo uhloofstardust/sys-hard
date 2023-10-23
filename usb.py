@@ -1,8 +1,9 @@
 import json
 import tkinter as tk
+import subprocess
 
 rules_conf_file = '/etc/usbguard/rules.conf'
-rules_conf_file = './sample.txt'
+#rules_conf_file = './sample.txt'
 
 lines_list = []
 
@@ -32,7 +33,7 @@ for line in lines_list:
 
 
 
-def change_rule_status(id_to_block):
+def change_rule_status(id_to_block, new_status):
 
     with open(rules_conf_file, 'r') as file:
         lines = file.readlines()
@@ -40,19 +41,19 @@ def change_rule_status(id_to_block):
     for i, line in enumerate(lines):
         if id_to_block in line:
             if "allow" in line:
-                lines[i] = line.replace("allow", "block")
+                lines[i] = line.replace("allow", new_status)
             elif "block" in line:
-                lines[i] = line.replace("block", "allow")
+                lines[i] = line.replace("block", new_status)
 
     with open(rules_conf_file, 'w') as file:
         file.writelines(lines)
-
+    subprocess.run("pkexec service usbguard restart", shell=True)
 
 
 
 def update_status(index, new_status):
     update_display()
-    change_rule_status(objects[index]["id"])
+    change_rule_status(objects[index]["id"], new_status)
     objects[index]["status"] = new_status
     update_display()
 
@@ -93,4 +94,3 @@ update_button = tk.Button(root, text="refresh", command=update_display)
 update_button.pack()
 update_display()
 root.mainloop()
-
