@@ -168,3 +168,26 @@ except Exception as e:
 ```
 
 
+```
+# Define the path to the rules.conf file
+rules_conf_file = '/etc/usbguard/rules.conf'
+
+# Create a list to store each line as a string
+lines_list = []
+
+try:
+    with open(rules_conf_file, 'r') as file:
+        for line in file:
+            lines_list.append(line.strip())
+
+    # Print the list of lines
+    for line in lines_list:
+        print(line)
+
+except FileNotFoundError:
+    print(f"File not found: {rules_conf_file}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+```
+
