@@ -52,7 +52,6 @@ def change_rule_status(id_to_block, new_status):
 
 
 def update_status(index, new_status):
-    update_display()
     change_rule_status(objects[index]["id"], new_status)
     objects[index]["status"] = new_status
     update_display()
