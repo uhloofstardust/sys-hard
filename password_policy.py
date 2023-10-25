@@ -1,16 +1,19 @@
 
 
-def change_rule_status(filepath, before, after):
+def change_rule_status(filepath, rule, value=0, enable=True):
+    newlines = []
+    
     with open(filepath, 'r') as f:
         lines = f.readlines()
     
-    for i, line in enumerate(lines):
-        if before in line:
-            if "# "+before in line:
-                lines[i].replace("# "+before, after)
-            elif "# "+before not in line:
-                lines[i].replace(before, after)
+    for line in lines:
+        if (line.strip().startswith('# '+rule) or line.strip().startswith(rule)):
+            if enable:
+                newlines.append(rule + '=' + value)
+            else:
+                newlines.append('# ' + rule)
+        else:
+            newlines.append(line)
     
     with open(filepath, 'w') as f:
-        f.writelines(lines)
-
+        f.writelines(newlines)
