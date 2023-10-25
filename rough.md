@@ -191,3 +191,107 @@ except Exception as e:
 
 ```
 
+
+<hr><hr>
+
+## Disable USB Storage
+
+In ```/etc/modprobe.d/blacklist.conf``` add ```blacklist usb_storage```
+
+In ```/etc/rc.local``` add
+```
+modprobe -r usb_storage
+exit 0
+```
+
+<hr>
+
+## Secure SSH
+
+```/etc/ssh/sshd_config```
+change default port # for ssh to sth else
+disable root login ```PermitRootLogn no```
+
+check ssh manual to understand these and modify accordingly or add more:
+```
+Protocol2
+IgnoreRhosts to yes
+HostbasedAuthentication no
+PermitEmptyPasswords no
+X11Forwarding no
+MaxAuthTries 2
+Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+ClientAliveInterval 600
+ClientAliveCountMax 0
+UsePAM yes
+```
+
+set permissions on the file ```/etc/ssh/sshd_config```
+
+```
+chown root:root /etc/ssh/sshd_config
+chmod 600 /etc/ssh/sshd_config
+```
+
+<hr>
+
+## enable SELinux
+3 options: disabled, permissive(prints warnings), enforcing
+
+In ```/etc/selinux/config``` 
+```
+SELinux=enforcing
+```
+
+<hr>
+
+## Password Policies
+
+Configure the file ```/etc/pam.d/common-password```
+
+- enforce strong password hashing
+- last 3 passwords shouldn't be reused
+- strong lockout policy
+- 14 character passwords
+- ensure complexity
+
+<hr>
+
+## firewall 
+
+```ufw enable```
+
+<hr>
+
+## Intrusion Detection
+
+use AIDE
+
+
+<hr>
+
+## set a bios/firmware password
+
+<hr>
+
+## configure the device boot order to prevent unauthorized booting from alternate media
+
+<hr>
+
+## remove legacy services
+
+- telnet-server
+- rsh, rlogin, rcp
+- ypserv, ypbind
+- tftp-server
+- talk, talk-server
+
+<hr>
+
+## protect system from rootkits
+
+<hr>
+
+## update
+
+<hr>
