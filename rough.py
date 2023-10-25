@@ -25,9 +25,14 @@ class App(ctk.CTk):
         self.home_button = self.create_nav_button(self.navigation_frame, "PortMaster", self.home_button_event)
         self.frame_2_button = self.create_nav_button(self.navigation_frame, "Frame 2", self.frame_2_button_event)
         self.frame_3_button = self.create_nav_button(self.navigation_frame, "Frame 3", self.frame_3_button_event)
+        
+        self.home_button.grid(row=1,column=0)
+        self.frame_2_button.grid(row=2,column=0)
+        self.frame_3_button.grid(row=3,column=0)
+
 
         self.appearance_mode_menu = ctk.CTkOptionMenu(self.navigation_frame, values=["Light", "Dark", "System"], command=self.change_appearance_mode_event)
-        self.appearance_mode_menu.grid(row=1, column=0, padx=20, pady=20, sticky="s")
+        self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=20, sticky="s")
 
     def create_home_frame(self):
         self.home_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
@@ -156,4 +161,3 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-
