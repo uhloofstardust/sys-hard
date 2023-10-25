@@ -36,7 +36,7 @@ def add_rule(filepath, rule, enable=True):
     with open(filepath, 'w') as f:
         f.writelines(newlines)
         
-def password_policy(rule, value, enable):
+def password_policy(rule, value=0, enable=True):
     if rule in ['minlen', 'minclass', 'maxrepeat', 'dictcheck', 'usercheck', 'retry']:
         change_rule_status('/etc/security/pwquality', rule, value, enable)
     elif rule in ['enforce_for_root']:
