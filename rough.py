@@ -3,10 +3,6 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 
-
-# rules in file
-
-
 rules = ['minlen', 'minclass', 'maxrepeat', 'dictcheck', 'usercheck', 'retry']
 
 
@@ -21,9 +17,9 @@ def change_rule_status(filepath, rule, value=0, enable=True):
     for line in lines:
         if (line.strip().startswith('# '+rule) or line.strip().startswith(rule)):
             if enable:
-                newlines.append(rule + '=' + value + '\n')
+                newlines.append(rule + '=' + str(value) + '\n')
             else:
-                newlines.append('# ' + rule + '=' + value + '\n')
+                newlines.append('# ' + rule + '=' + str(value) + '\n')
         else:
             newlines.append(line)
     
@@ -54,14 +50,14 @@ def add_rule(filepath, rule, enable=True):
 
 def password_policy(rule, value=0, enable=True):
     if rule in rules:
-        change_rule_status('/etc/security/pwquality', rule, value, enable)
+        change_rule_status('/etc/security/pwquality.conf', rule, value, enable)
     elif rule in ['enforce_for_root']:
-        add_rule('/etc/security/pwquality', rule, enable)
+        add_rule('/etc/security/pwquality.conf', rule, enable)
 
 root = ctk.CTk()
 root.title("System Configuration")
 
-# Create variables to store user inputs
+
 historynumber_var = ctk.CTkEntry(master=root)
 minlen_var = ctk.CTkEntry(master=root)
 minclass_var = ctk.CTkEntry(master=root)
@@ -71,9 +67,8 @@ usercheck_var = ctk.CTkEntry(master=root)
 enforceroot_var = ctk.CTkEntry(master=root)
 retry_var = ctk.CTkEntry(master=root)
 
-# Create labels, entry fields, and checkboxes for each configuration option
-options = [
 
+options = [
     {"name": "minlen", "label": "Minimum Length:"},
     {"name": "minclass", "label": "Minimum Classes:"},
     {"name": "maxrepeat", "label": "Maximum Repeat:"},
@@ -83,23 +78,80 @@ options = [
     {"name": "retry", "label": "Retry:"},
 ]
 
-for i, option in enumerate(options):
-    label = ctk.CTkLabel(root, text=option["label"])
-    label.grid(row=i, column=0, sticky='w')
 
-    entry = ctk.CTkEntry(master=root,
-                               placeholder_text=option["name"],
-                               width=150,
-                               height=25,
-                               border_width=2,
-                               corner_radius=5)
-    entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+#minlen 
 
-    enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[i]))
-    enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+minlen_label = ctk.CTkLabel(root, text=option["label"])
+minlen_label.grid(row=i, column=0, sticky='w')
 
-    disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[i]))
-    disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+minlen_entry = ctk.CTkEntry(master=root, placeholder_text=option["name"], width=150, height=25, border_width=2, corner_radius=5)
+minlen_entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+
+minlen_enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy('minlen', minlen_entry, True))
+minlen_enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+
+minlen_disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy('minlen', minlen_entry, False))
+minlen_disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+
+
+#minclass 
+
+minclass_label = ctk.CTkLabel(root, text=option["label"])
+minclass_label.grid(row=i, column=0, sticky='w')
+
+minclass_entry = ctk.CTkEntry(master=root, placeholder_text=option["name"], width=150, height=25, border_width=2, corner_radius=5)
+minclass_entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+
+minclass_enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[1], minclass_entry, True))
+minclass_enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+
+minclass_disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[1], minclass_entry, False))
+minclass_disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+
+
+#maxrepeat 
+
+maxrepeat_label = ctk.CTkLabel(root, text=option["label"])
+maxrepeat_label.grid(row=i, column=0, sticky='w')
+
+maxrepeat_entry = ctk.CTkEntry(master=root, placeholder_text=option["name"], width=150, height=25, border_width=2, corner_radius=5)
+maxrepeat_entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+
+maxrepeat_enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[2], maxrepeat_entry, True))
+maxrepeat_enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+
+maxrepeat_disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[2], maxrepeat_entry, False))
+maxrepeat_disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+
+
+#dictcheck 
+
+dictcheck_label = ctk.CTkLabel(root, text=option["label"])
+dictcheck_label.grid(row=i, column=0, sticky='w')
+
+dictcheck_entry = ctk.CTkEntry(master=root, placeholder_text=option["name"], width=150, height=25, border_width=2, corner_radius=5)
+dictcheck_entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+
+dictcheck_enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[3], dictcheck_entry, True))
+dictcheck_enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+
+dictcheck_disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[3], dictcheck_entry, False))
+dictcheck_disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+
+
+#usercheck 
+
+usercheck_label = ctk.CTkLabel(root, text=option["label"])
+usercheck_label.grid(row=i, column=0, sticky='w')
+
+usercheck_entry = ctk.CTkEntry(master=root, placeholder_text=option["name"], width=150, height=25, border_width=2, corner_radius=5)
+usercheck_entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
+
+usercheck_enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[0], usercheck_entry, True))
+usercheck_enable_button.grid(row=i, column=2,padx = 10,pady = 10)
+
+usercheck_disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[0], usercheck_entry, False))
+usercheck_disable_button.grid(row=i, column=3,padx = 10,pady = 10)
+
 
 root.mainloop()
-
