@@ -1,66 +1,79 @@
 import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 
-def save_config():
-    config_values = {
-        "historynumber": historynumber_var.get(),
-        "minlen": minlen_var.get(),
-        "minclass": minclass_var.get(),
-        "maxrepeat": maxrepeat_var.get(),
-        "dictcheck": dictcheck_var.get(),
-        "usercheck": usercheck_var.get(),
-        "enforceroot": enforceroot_var.get(),
-        "retry": retry_var.get(),
-    }
 
-    # Define the system files and their corresponding lines
-    config_files = {
-        "minlen": ("/etc/security/pwquality.conf", "minlen ="),
-        "minclass": ("/etc/security/pwquality.conf", "minclass ="),
-        "maxrepeat": ("/etc/security/pwquality.conf", "maxrepeat ="),
-        "dictcheck": ("/etc/security/pwquality.conf", "dictcheck ="),
-        "usercheck": ("/etc/security/pwquality.conf", "usercheck ="),
-        "enforceroot": ("/etc/security/pwquality.conf", "enforce_for_root"),
-        "retry": ("/etc/security/pwquality.conf", "retry ="),
-    }
 
-    for key, value in config_values.items():
-        file_path, line_prefix = config_files.get(key, (None, None))
-        if file_path and line_prefix is not None:
-            with open(file_path, 'r') as file:
-                lines = file.readlines()
+# rules in file
 
-            found = False
-            for i, line in enumerate(lines):
-                if line.startswith(line_prefix):
-                    lines[i] = f"{line_prefix} {value}\n"
-                    found = True
-                    break
 
-            if not found:
-                lines.append(f"{line_prefix} {value}\n")
+rules = ['minlen', 'minclass', 'maxrepeat', 'dictcheck', 'usercheck', 'retry']
 
-            with open(file_path, 'w') as file:
-                file.writelines(lines)
 
-    messagebox.showinfo("Success", "Configuration saved!")
 
-root = tk.Tk()
+
+def change_rule_status(filepath, rule, value=0, enable=True):
+    newlines = []
+    
+    with open(filepath, 'r') as f:
+        lines = f.readlines()
+    
+    for line in lines:
+        if (line.strip().startswith('# '+rule) or line.strip().startswith(rule)):
+            if enable:
+                newlines.append(rule + '=' + value + '\n')
+            else:
+                newlines.append('# ' + rule + '=' + value + '\n')
+        else:
+            newlines.append(line)
+    
+    with open(filepath, 'w') as f:
+        f.writelines(newlines)
+
+
+
+def add_rule(filepath, rule, enable=True):
+    newlines = []
+    
+    with open(filepath, 'r') as f:
+        lines = f.readlines()
+    
+    for line in lines:
+        if (line.strip().startswith('# '+rule) or line.strip().startswith(rule)):
+            if enable:
+                newlines.append(rule + '\n')
+            else:
+                newlines.append('# ' + rule + '\n')
+        else:
+            newlines.append(line)
+    
+    with open(filepath, 'w') as f:
+        f.writelines(newlines)
+
+
+
+def password_policy(rule, value=0, enable=True):
+    if rule in rules:
+        change_rule_status('/etc/security/pwquality', rule, value, enable)
+    elif rule in ['enforce_for_root']:
+        add_rule('/etc/security/pwquality', rule, enable)
+
+root = ctk.CTk()
 root.title("System Configuration")
 
 # Create variables to store user inputs
-historynumber_var = tk.IntVar()
-minlen_var = tk.IntVar()
-minclass_var = tk.IntVar()
-maxrepeat_var = tk.IntVar()
-dictcheck_var = tk.IntVar()
-usercheck_var = tk.IntVar()
-enforceroot_var = tk.IntVar()
-retry_var = tk.IntVar()
+historynumber_var = ctk.CTkEntry(master=root)
+minlen_var = ctk.CTkEntry(master=root)
+minclass_var = ctk.CTkEntry(master=root)
+maxrepeat_var = ctk.CTkEntry(master=root)
+dictcheck_var = ctk.CTkEntry(master=root)
+usercheck_var = ctk.CTkEntry(master=root)
+enforceroot_var = ctk.CTkEntry(master=root)
+retry_var = ctk.CTkEntry(master=root)
 
 # Create labels, entry fields, and checkboxes for each configuration option
 options = [
-    {"name": "historynumber", "label": "History Number:"},
+
     {"name": "minlen", "label": "Minimum Length:"},
     {"name": "minclass", "label": "Minimum Classes:"},
     {"name": "maxrepeat", "label": "Maximum Repeat:"},
@@ -71,17 +84,22 @@ options = [
 ]
 
 for i, option in enumerate(options):
-    label = tk.Label(root, text=option["label"])
+    label = ctk.CTkLabel(root, text=option["label"])
     label.grid(row=i, column=0, sticky='w')
 
-    entry = tk.Entry(root, textvariable=option["name"] + "_var")
-    entry.grid(row=i, column=1, sticky='w')
+    entry = ctk.CTkEntry(master=root,
+                               placeholder_text=option["name"],
+                               width=150,
+                               height=25,
+                               border_width=2,
+                               corner_radius=5)
+    entry.grid(row=i, column=1, sticky='w',padx=20,pady=10)
 
-    enable_button = tk.Button(root, text="Enable", command=save_config)
-    enable_button.grid(row=i, column=2)
+    enable_button = ctk.CTkButton(root, text="Enable", command=lambda : password_policy(rules[i]))
+    enable_button.grid(row=i, column=2,padx = 10,pady = 10)
 
-    disable_button = tk.Button(root, text="Disable", command=save_config)
-    disable_button.grid(row=i, column=3)
+    disable_button = ctk.CTkButton(root, text="Disable", command=lambda : password_policy(rules[i]))
+    disable_button.grid(row=i, column=3,padx = 10,pady = 10)
 
 root.mainloop()
 
