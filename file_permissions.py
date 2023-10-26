@@ -1,6 +1,6 @@
-import tkinter as tk
-from tkinter import messagebox, IntVar
 import subprocess
+from tkinter import messagebox
+
 
 def add_permissions(username, path, read_access, write_access, execute_access):
     subprocess.run(["pkexec", "setfacl", '-x', f"u:{username}", path])
@@ -17,40 +17,64 @@ def add_permissions(username, path, read_access, write_access, execute_access):
     except subprocess.CalledProcessError as e:
         messagebox.showerror("Error", f"Failed to update permissions: {e}")
 
+
 def flush_user(username, path):
     subprocess.run(["pkexec", "setfacl", '-x', f"u:{username}", path])
-    
+
+
 def flush_all(path):
     subprocess.run(["pkexec", "setfacl", '--remove-all', path])
 
-def create_manage_permissions_page():
-    subprocess.run(["pwd"])
-    manage_permissions_window = tk.Toplevel(root)
-    manage_permissions_window.title("Manage File Permissions")
 
-    tk.Label(manage_permissions_window, text="Username:").pack()
-    entry_username = tk.Entry(manage_permissions_window)
-    entry_username.pack()
+def create_frame_2(parent_frame, ctk):
+    two = ctk.CTkFrame(parent_frame, corner_radius=0)
+    two.pack(fill=ctk.BOTH, expand=True)  # Use pack to place the 'two' frame
 
-    tk.Label(manage_permissions_window, text="File/Directory Path:").pack()
-    entry_path = tk.Entry(manage_permissions_window)
-    entry_path.pack()
+    title = ctk.CTkLabel(two, text="File Permissions", font=ctk.CTkFont(size=15, weight="bold"))
+    title.pack(side=ctk.TOP, padx=10, pady=10)
 
-    read_var = IntVar()
-    write_var = IntVar()
-    execute_var = IntVar()
+    entry_username_frame = ctk.CTkFrame(two)
+    entry_username_frame.pack(side=ctk.TOP, padx=10, pady=10)
 
-    tk.Checkbutton(manage_permissions_window, text="Read Access", variable=read_var).pack()
-    tk.Checkbutton(manage_permissions_window, text="Write Access", variable=write_var).pack()
-    tk.Checkbutton(manage_permissions_window, text="Execute Access", variable=execute_var).pack()
+    label1 = ctk.CTkLabel(entry_username_frame, text="Enter the Username:  ", font=("Ubuntu", 20), justify=ctk.LEFT)
+    label1.pack(side=ctk.LEFT, padx=10, pady=10)
 
-    submit_button = tk.Button(manage_permissions_window, text="Submit", command=lambda: add_permissions(entry_username.get(), entry_path.get(), read_var.get(), write_var.get(), execute_var.get()))
-    submit_button.pack()
+    entry_username = ctk.CTkEntry(entry_username_frame, placeholder_text="", font=("Ubuntu", 20, "bold"),
+                                  border_width=2)
+    entry_username.pack(side=ctk.LEFT, padx=10, pady=10)
 
-root = tk.Tk()
-root.title("File Permission Manager")
+    entry_path_frame = ctk.CTkFrame(two)
+    entry_path_frame.pack(side=ctk.TOP, padx=10, pady=10)
 
-manage_permissions_button = tk.Button(root, text="Manage File Permissions", command=create_manage_permissions_page)
-manage_permissions_button.pack()
+    label2 = ctk.CTkLabel(entry_path_frame, text="Enter File Path: ", font=("Ubuntu", 20), justify=ctk.LEFT)
+    label2.pack(side=ctk.LEFT, padx=10, pady=10)
 
-root.mainloop()
+    entry_path = ctk.CTkEntry(entry_path_frame, placeholder_text="", font=("Ubuntu", 20, "bold"), border_width=2)
+    entry_path.pack(side=ctk.LEFT, padx=10, pady=10)
+
+    checkboxes_frame = ctk.CTkFrame(two)
+    checkboxes_frame.pack(side=ctk.TOP, padx=10, pady=10)
+
+    read_var = ctk.CTkCheckBox(checkboxes_frame, text="Read", font=("Ubuntu", 20))
+    read_var.pack(side=ctk.LEFT, padx=10, pady=10)
+
+    write_var = ctk.CTkCheckBox(checkboxes_frame, text="Write", font=("Ubuntu", 20))
+    write_var.pack(side=ctk.LEFT, padx=10, pady=10)
+
+    execute_var = ctk.CTkCheckBox(checkboxes_frame, text="Execute", font=("Ubuntu", 20))
+    execute_var.pack(side=ctk.LEFT, padx=10, pady=10)
+
+    flush_all_btn = ctk.CTkButton(two, text="FLUSH FOR ALL", font=("Ubuntu", 18),
+                                  command=lambda: flush_all_func(entry_path))
+    flush_all_btn.pack(side=ctk.TOP, padx=10, pady=10)
+
+    flush_user_btn = ctk.CTkButton(two, text="FLUSH FOR USER", font=("Ubuntu", 18),
+                                   command=lambda: flush_user_func(entry_username, entry_path))
+    flush_user_btn.pack(side=ctk.TOP, padx=10, pady=10)
+
+    submit = ctk.CTkButton(two, text="SUBMIT", font=("Ubuntu", 18),
+                           command=lambda: add_permissions(entry_username, entry_path, read_var, write_var,
+                                                           execute_var))
+    submit.pack(side=ctk.TOP, padx=10, pady=10)
+
+    return two
