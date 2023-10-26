@@ -258,13 +258,11 @@ class App(customtkinter.CTk):
         if username:
             password = self.entry_passwd1.get()
             fpasswd = password + '\n' + password
-            print("\n\n0000",password,"\n\n")
+            # print("\n\n0000",password,"\n\n")
             if password is not None:
                 try:
-                    print("\n\n0000",password,"\n\n")
+                    # print("\n\n0000",password,"\n\n")
                     subprocess.run(f"sudo adduser {username} --gecos {username}", shell=True, input=fpasswd.encode())
-                    #subprocess.run(["echo", f"{username}:{password}" "|", "sudo", "chpasswd"])
-                    #subprocess.run(["sudo", "passwd", "-u", username])
                     messagebox.showinfo("Success", f"User '{username}' created!")
                 except subprocess.CalledProcessError as e:
                     messagebox.showerror("Error", f"Failed to create user: {e}")
@@ -385,3 +383,33 @@ class App(customtkinter.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
+
+
+
+def create_user_management(parent_frame, ctk):
+    user_management_frame = ctk.CTkFrame(parent_frame, corner_radius=0)
+    title = ctk.CTkLabel(user_management_frame, text="User Management", font=("Ubuntu", 35))
+    entry_username = ctk.CTkEntry(user_management_frame, placeholder_text="Username", font=("Ubuntu", 15))
+    entry_passwd1 = ctk.CTkEntry(user_management_frame, placeholder_text="Password", show="*", font=("Ubuntu", 15))
+    create_user_button = ctk.CTkButton(user_management_frame, text="Create User", font=("Ubuntu", 15), command=create_user)
+
+    user_management_frame.pack(expand=True, fill="both")
+    title.place(relx=0.3, rely=0.05)
+    entry_username.place(relx=0.1, rely=0.2, relwidth=0.2)
+    entry_passwd1.place(relx=0.1, rely=0.3, relwidth=0.2)
+    create_user_button.place(relx=0.6, rely=0.2, relwidth=0.15)
+
+    def create_user():
+        username = entry_username.get()
+        password = entry_passwd1.get()
+        if username:
+            if password is not None:
+                # Add your logic to create a new user using the provided username and password.
+                print(f"Creating user '{username}' with password: {password}")
+            else:
+                print("Password cannot be empty.")
+        else:
+            print("Username cannot be empty.")
+
+    return user_management_frame
