@@ -26,6 +26,7 @@ def block_domains(domains):
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
 def getdomain():
     domain = inputfied.get()
     domain = domain.strip()
@@ -42,4 +43,11 @@ inputfied.pack(padx = 10,pady = 10)
 btk = CTkButton(master=app,text="submit",command=getdomain)
 btk.pack(padx = 10,pady = 10)
 scrollable.pack(padx = 10,pady = 10)
+with open('/etc/hosts','r') as file:
+    data =  [line  for line in file if 'www.' in line]
+    print(data)
+
+for i in data:
+   s=i.split()
+   label=CTkLabel(master=scrollable,text=s[1]).pack()
 app.mainloop()
