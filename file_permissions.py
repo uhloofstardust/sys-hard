@@ -26,7 +26,7 @@ def flush_all(path):
     subprocess.run(["pkexec", "setfacl", '--remove-all', path])
 
 
-def create_frame_2(parent_frame, ctk):
+def create_file_permissions(parent_frame, ctk):
     two = ctk.CTkFrame(parent_frame, corner_radius=0)
     two.pack(fill=ctk.BOTH, expand=True)  # Use pack to place the 'two' frame
 
