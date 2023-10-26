@@ -35,11 +35,11 @@ scrollable = CTkScrollableFrame(master=app,
                                 width=560,
                                 height=200,
                                 corner_radius=10)
-inputfied = CTkEntry(master=scrollable,width=220,placeholder_text="Enter domain name")
 app.geometry("600x500")
 set_appearance_mode("dark")
+inputfied = CTkEntry(master=app,width=220,placeholder_text="Enter domain name")
+inputfied.pack(padx = 10,pady = 10)
 btk = CTkButton(master=app,text="submit",command=getdomain)
-btk.place(relx=0.5,rely=0.59,anchor="center")
-scrollable.place(relx=0.5, rely=0.3, anchor=CENTER)
-inputfied.pack()
+btk.pack(padx = 10,pady = 10)
+scrollable.pack(padx = 10,pady = 10)
 app.mainloop()
